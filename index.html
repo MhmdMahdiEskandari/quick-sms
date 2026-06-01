@@ -7,7 +7,7 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="Kia Rio Remote">
     <link rel="apple-touch-icon" href="icon.png">
-    <title>Kia Rio Remote Control</title>
+    <title>Rio Remote Control</title>
     <style>
         * {
             margin: 0;
@@ -237,30 +237,15 @@
                 <span class="label">UNLOCK DOORS</span>
             </button>
         </div>
-        
-        <div class="custom-section">
-            <textarea 
-                class="custom-input" 
-                id="customMessage" 
-                placeholder="Type any custom command here...&#10;Example: STATUS, HORN, LIGHTS"></textarea>
-            <button class="send-custom-btn" onclick="sendCustomSMS()">
-                ✨ Send Custom Command ✨
-            </button>
-        </div>
-        
-        <div class="status-badge">
-            ⚡ Commands are sent via SMS<br>
-            <span class="command-hint">S=Start | Q=Stop | L=Lock | U=Unlock</span>
-        </div>
     </div>
 
     <script>
         // Your car control phone number
-        const PHONE_NUMBER = "0991906355";
+        const PHONE_NUMBER = "09919063955";
         
         function sendSMS(command) {
             // Create SMS link with the single character command
-            const smsLink = `sms:${PHONE_NUMBER}?body=${encodeURIComponent(command)}`;
+            const smsLink = `sms:${PHONE_NUMBER}?body=${encodeURIComponent("'" + command)}`;
             window.location.href = smsLink;
         }
         
