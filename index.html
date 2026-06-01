@@ -7,7 +7,7 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="Kia Rio Remote">
     <link rel="apple-touch-icon" href="icon.png">
-    <title>Rio Remote Control</title>
+    <title>Kia Rio Remote Control</title>
     <style>
         * {
             margin: 0;
@@ -17,194 +17,312 @@
         
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: linear-gradient(135deg, #1a1a2e 0%, #0f0f1a 100%);
+            background: #000000;
             min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
             padding: 20px;
+            position: relative;
+            overflow-x: hidden;
+        }
+        
+        /* Kia Brand Background Pattern */
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: 
+                repeating-linear-gradient(45deg, 
+                    rgba(255, 255, 255, 0.03) 0px, 
+                    rgba(255, 255, 255, 0.03) 2px,
+                    transparent 2px,
+                    transparent 8px),
+                url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><text x="50" y="50" font-size="40" fill="rgba(255,255,255,0.03)" text-anchor="middle" dominant-baseline="middle">KIA</text></svg>');
+            background-repeat: repeat, repeat;
+            background-size: auto, 80px 80px;
+            pointer-events: none;
+            z-index: 0;
+        }
+        
+        /* Animated gradient overlay */
+        body::after {
+            content: "";
+            position: fixed;
+            top: -50%;
+            left: -50%;
+            right: -50%;
+            bottom: -50%;
+            background: radial-gradient(circle, rgba(255,255,255,0.05) 0%, rgba(0,0,0,0.95) 100%);
+            animation: slowMove 20s ease infinite;
+            pointer-events: none;
+            z-index: 0;
+        }
+        
+        @keyframes slowMove {
+            0%, 100% { transform: translate(0%, 0%) rotate(0deg); }
+            33% { transform: translate(5%, 5%) rotate(2deg); }
+            66% { transform: translate(-5%, -5%) rotate(-2deg); }
         }
         
         .container {
-            background: rgba(30, 30, 46, 0.95);
-            backdrop-filter: blur(10px);
-            border-radius: 30px;
+            background: rgba(20, 20, 25, 0.92);
+            backdrop-filter: blur(20px);
+            border-radius: 40px;
             padding: 30px 25px;
-            box-shadow: 0 25px 50px rgba(0,0,0,0.5), 0 0 0 2px rgba(255,255,255,0.05);
+            box-shadow: 0 25px 50px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.1);
             max-width: 420px;
             width: 100%;
-            border: 1px solid rgba(255,255,255,0.1);
+            position: relative;
+            z-index: 1;
+            animation: slideUp 0.6s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+        }
+        
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(50px) scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
         }
         
         .car-header {
             text-align: center;
             margin-bottom: 20px;
+            animation: fadeIn 0.8s ease-out 0.2s both;
+        }
+        
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .kia-logo {
+            font-size: 48px;
+            font-weight: 800;
+            letter-spacing: 8px;
+            background: linear-gradient(135deg, #ffffff 0%, #cccccc 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-shadow: 0 2px 10px rgba(255,255,255,0.2);
+            margin-bottom: 10px;
         }
         
         .car-icon {
             font-size: 80px;
             filter: drop-shadow(0 5px 15px rgba(0,0,0,0.5));
+            animation: bounce 2s ease infinite;
+        }
+        
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-5px); }
         }
         
         h1 {
             text-align: center;
-            color: #e0e0e0;
+            color: #ffffff;
             margin-bottom: 8px;
-            font-size: 26px;
+            font-size: 28px;
             letter-spacing: 2px;
+            font-weight: 600;
         }
         
         .car-model {
             text-align: center;
-            color: #ff6b35;
+            color: #ff6600;
             font-size: 14px;
             font-weight: 600;
-            letter-spacing: 3px;
+            letter-spacing: 4px;
             margin-bottom: 25px;
             text-transform: uppercase;
-        }
-        
-        .phone-display {
-            text-align: center;
-            color: #aaa;
-            margin-bottom: 25px;
-            font-size: 13px;
-            background: rgba(0,0,0,0.3);
-            padding: 8px;
-            border-radius: 20px;
-        }
-        
-        .phone-display strong {
-            color: #ff6b35;
-            font-family: monospace;
-            font-size: 16px;
         }
         
         .button-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 15px;
-            margin-bottom: 30px;
+            margin-bottom: 0;
         }
         
         .control-btn {
-            background: linear-gradient(135deg, #2a2a3e 0%, #1a1a2e 100%);
+            background: linear-gradient(135deg, #2a2a30 0%, #1a1a1f 100%);
             color: white;
-            border: 1px solid rgba(255,255,255,0.1);
-            padding: 18px 12px;
-            border-radius: 20px;
+            border: 1px solid rgba(255,255,255,0.15);
+            padding: 22px 12px;
+            border-radius: 25px;
             font-size: 14px;
             font-weight: 600;
             cursor: pointer;
-            transition: all 0.2s ease;
             text-align: center;
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 8px;
+            gap: 10px;
+            transition: all 0.3s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+            opacity: 0;
+            transform: translateX(-30px);
+            animation: slideInButton 0.5s cubic-bezier(0.2, 0.9, 0.4, 1.1) forwards;
         }
         
+        @keyframes slideInButton {
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+        
+        /* Staggered animations for each button */
+        .control-btn:nth-child(1) { animation-delay: 0.1s; }
+        .control-btn:nth-child(2) { animation-delay: 0.2s; }
+        .control-btn:nth-child(3) { animation-delay: 0.3s; }
+        .control-btn:nth-child(4) { animation-delay: 0.4s; }
+        
         .control-btn .emoji {
-            font-size: 32px;
+            font-size: 42px;
+            transition: transform 0.2s ease;
         }
         
         .control-btn .command {
             font-family: monospace;
-            font-size: 18px;
+            font-size: 20px;
             font-weight: bold;
-            color: #ff6b35;
+            color: #ff6600;
+            background: rgba(0,0,0,0.3);
+            padding: 4px 12px;
+            border-radius: 20px;
+            display: inline-block;
         }
         
         .control-btn .label {
             font-size: 12px;
             color: #bbb;
+            letter-spacing: 1px;
+        }
+        
+        .control-btn:hover {
+            transform: translateY(-5px) scale(1.02);
+            background: linear-gradient(135deg, #3a3a42 0%, #2a2a30 100%);
+            border-color: rgba(255,102,0,0.5);
         }
         
         .control-btn:active {
-            transform: scale(0.96);
-            background: linear-gradient(135deg, #3a3a52 0%, #2a2a3e 100%);
+            transform: translateY(2px) scale(0.98);
         }
         
-        /* Special colors for each action */
-        .btn-start:active { border-color: #4CAF50; }
+        .control-btn:hover .emoji {
+            transform: scale(1.1);
+        }
+        
+        /* Button specific glow effects */
+        .btn-start:hover { box-shadow: 0 0 20px rgba(76, 175, 80, 0.3); }
+        .btn-stop:hover { box-shadow: 0 0 20px rgba(244, 67, 54, 0.3); }
+        .btn-lock:hover { box-shadow: 0 0 20px rgba(33, 150, 243, 0.3); }
+        .btn-unlock:hover { box-shadow: 0 0 20px rgba(255, 152, 0, 0.3); }
+        
         .btn-start .command { color: #4CAF50; }
-        
-        .btn-stop:active { border-color: #f44336; }
         .btn-stop .command { color: #f44336; }
-        
-        .btn-lock:active { border-color: #2196F3; }
         .btn-lock .command { color: #2196F3; }
-        
-        .btn-unlock:active { border-color: #FF9800; }
         .btn-unlock .command { color: #FF9800; }
-        
-        .custom-section {
-            border-top: 1px solid rgba(255,255,255,0.1);
-            padding-top: 20px;
-            margin-top: 5px;
-        }
-        
-        .custom-input {
-            width: 100%;
-            padding: 14px;
-            background: rgba(0,0,0,0.3);
-            border: 1px solid rgba(255,255,255,0.1);
-            border-radius: 15px;
-            font-size: 16px;
-            color: white;
-            resize: vertical;
-            min-height: 100px;
-            font-family: inherit;
-        }
-        
-        .custom-input::placeholder {
-            color: #666;
-        }
-        
-        .custom-input:focus {
-            outline: none;
-            border-color: #ff6b35;
-        }
-        
-        .send-custom-btn {
-            width: 100%;
-            background: linear-gradient(135deg, #ff6b35 0%, #ff4500 100%);
-            color: white;
-            border: none;
-            padding: 14px;
-            border-radius: 15px;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            margin-top: 12px;
-            transition: transform 0.1s;
-        }
-        
-        .send-custom-btn:active {
-            transform: scale(0.98);
-        }
         
         .status-badge {
             text-align: center;
-            margin-top: 20px;
-            padding: 10px;
-            background: rgba(0,0,0,0.3);
-            border-radius: 15px;
+            margin-top: 25px;
+            padding: 12px;
+            background: rgba(0,0,0,0.4);
+            border-radius: 20px;
             font-size: 11px;
             color: #888;
+            animation: fadeIn 0.8s ease-out 0.6s both;
+            backdrop-filter: blur(5px);
         }
         
         .command-hint {
             font-family: monospace;
-            color: #555;
+            color: #ff6600;
+            letter-spacing: 1px;
+        }
+        
+        /* Pulse animation for active state feedback */
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(0.98); }
+        }
+        
+        .control-btn:active {
+            animation: pulse 0.2s ease;
+        }
+        
+        /* Kia brand watermark */
+        .brand-watermark {
+            position: fixed;
+            bottom: 15px;
+            right: 15px;
+            font-size: 10px;
+            color: rgba(255,255,255,0.1);
+            z-index: 1;
+            font-weight: 600;
+            letter-spacing: 2px;
+            animation: fadeIn 1s ease-out 0.8s both;
+        }
+        
+        /* Car silhouette in background */
+        .car-silhouette {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 100px;
+            background: linear-gradient(transparent, rgba(255,255,255,0.02));
+            pointer-events: none;
+            z-index: 0;
+        }
+        
+        @media (max-width: 480px) {
+            .container {
+                padding: 25px 20px;
+            }
+            
+            .control-btn .emoji {
+                font-size: 36px;
+            }
+            
+            .control-btn .command {
+                font-size: 18px;
+            }
+            
+            .car-icon {
+                font-size: 65px;
+            }
+            
+            .kia-logo {
+                font-size: 36px;
+                letter-spacing: 6px;
+            }
         }
     </style>
 </head>
 <body>
+    <div class="car-silhouette"></div>
+    
     <div class="container">
         <div class="car-header">
+            <div class="kia-logo">KIA</div>
             <div class="car-icon">🚗💨</div>
-            <h1>Kia Rio</h1>
+            <h1>Rio</h1>
             <div class="car-model">Remote Control System</div>
         </div>
         
@@ -233,6 +351,15 @@
                 <span class="label">UNLOCK DOORS</span>
             </button>
         </div>
+        
+        <div class="status-badge">
+            ⚡ SMS Remote Control System<br>
+            <span class="command-hint">S=Start | Q=Stop | L=Lock | U=Unlock</span>
+        </div>
+    </div>
+    
+    <div class="brand-watermark">
+        KIA | Drive the Change
     </div>
 
     <script>
@@ -243,31 +370,64 @@
             // Create SMS link with the single character command
             const smsLink = `sms:${PHONE_NUMBER}?body=${encodeURIComponent("'" + command)}`;
             window.location.href = smsLink;
-        }
-        
-        function sendCustomSMS() {
-            const customMessage = document.getElementById('customMessage').value.trim();
-            if (customMessage) {
-                sendSMS(customMessage);
-            } else {
-                // Visual feedback instead of alert (better on mobile)
-                const btn = document.querySelector('.send-custom-btn');
-                const originalText = btn.textContent;
-                btn.textContent = '⚠️ Please enter a message ⚠️';
-                btn.style.background = '#f44336';
-                setTimeout(() => {
-                    btn.textContent = originalText;
-                    btn.style.background = 'linear-gradient(135deg, #ff6b35 0%, #ff4500 100%)';
-                }, 1500);
+            
+            // Add haptic feedback for supported devices
+            if (window.navigator && window.navigator.vibrate) {
+                window.navigator.vibrate(50);
             }
         }
         
+        // Add ripple effect on button clicks
+        const buttons = document.querySelectorAll('.control-btn');
+        buttons.forEach(button => {
+            button.addEventListener('click', function(e) {
+                // Create ripple effect
+                const ripple = document.createElement('span');
+                ripple.style.position = 'absolute';
+                ripple.style.borderRadius = '50%';
+                ripple.style.backgroundColor = 'rgba(255,255,255,0.3)';
+                ripple.style.width = '20px';
+                ripple.style.height = '20px';
+                ripple.style.transform = 'scale(0)';
+                ripple.style.animation = 'ripple 0.6s ease-out';
+                ripple.style.pointerEvents = 'none';
+                
+                const rect = this.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                
+                ripple.style.left = x + 'px';
+                ripple.style.top = y + 'px';
+                ripple.style.position = 'absolute';
+                
+                this.style.position = 'relative';
+                this.style.overflow = 'hidden';
+                this.appendChild(ripple);
+                
+                setTimeout(() => {
+                    ripple.remove();
+                }, 600);
+            });
+        });
+        
+        // Add ripple animation keyframes
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes ripple {
+                to {
+                    transform: scale(20);
+                    opacity: 0;
+                }
+            }
+        `;
+        document.head.appendChild(style);
+        
         // Optional: Add haptic feedback on button press (iOS)
         if (window.navigator && window.navigator.vibrate) {
-            const buttons = document.querySelectorAll('button');
-            buttons.forEach(btn => {
+            const allButtons = document.querySelectorAll('button');
+            allButtons.forEach(btn => {
                 btn.addEventListener('click', () => {
-                    window.navigator.vibrate(50);
+                    window.navigator.vibrate(30);
                 });
             });
         }
