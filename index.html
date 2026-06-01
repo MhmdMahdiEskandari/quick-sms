@@ -2,12 +2,12 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black">
-    <meta name="apple-mobile-web-app-title" content="Quick SMS">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Kia Rio Remote">
     <link rel="apple-touch-icon" href="icon.png">
-    <title>Quick SMS</title>
+    <title>Kia Rio Remote Control</title>
     <style>
         * {
             margin: 0;
@@ -17,7 +17,7 @@
         
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #1a1a2e 0%, #0f0f1a 100%);
             min-height: 100vh;
             display: flex;
             justify-content: center;
@@ -26,19 +26,58 @@
         }
         
         .container {
-            background: white;
-            border-radius: 20px;
-            padding: 30px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-            max-width: 400px;
+            background: rgba(30, 30, 46, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 30px;
+            padding: 30px 25px;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.5), 0 0 0 2px rgba(255,255,255,0.05);
+            max-width: 420px;
             width: 100%;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .car-header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        
+        .car-icon {
+            font-size: 80px;
+            filter: drop-shadow(0 5px 15px rgba(0,0,0,0.5));
         }
         
         h1 {
             text-align: center;
-            color: #333;
-            margin-bottom: 30px;
-            font-size: 24px;
+            color: #e0e0e0;
+            margin-bottom: 8px;
+            font-size: 26px;
+            letter-spacing: 2px;
+        }
+        
+        .car-model {
+            text-align: center;
+            color: #ff6b35;
+            font-size: 14px;
+            font-weight: 600;
+            letter-spacing: 3px;
+            margin-bottom: 25px;
+            text-transform: uppercase;
+        }
+        
+        .phone-display {
+            text-align: center;
+            color: #aaa;
+            margin-bottom: 25px;
+            font-size: 13px;
+            background: rgba(0,0,0,0.3);
+            padding: 8px;
+            border-radius: 20px;
+        }
+        
+        .phone-display strong {
+            color: #ff6b35;
+            font-family: monospace;
+            font-size: 16px;
         }
         
         .button-grid {
@@ -48,91 +87,154 @@
             margin-bottom: 30px;
         }
         
-        .sms-btn {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        .control-btn {
+            background: linear-gradient(135deg, #2a2a3e 0%, #1a1a2e 100%);
             color: white;
-            border: none;
-            padding: 20px;
-            border-radius: 12px;
-            font-size: 16px;
+            border: 1px solid rgba(255,255,255,0.1);
+            padding: 18px 12px;
+            border-radius: 20px;
+            font-size: 14px;
             font-weight: 600;
             cursor: pointer;
-            transition: transform 0.2s, box-shadow 0.2s;
+            transition: all 0.2s ease;
             text-align: center;
-            word-wrap: break-word;
-            min-height: 80px;
             display: flex;
+            flex-direction: column;
             align-items: center;
-            justify-content: center;
+            gap: 8px;
         }
         
-        .sms-btn:active {
-            transform: scale(0.95);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        .control-btn .emoji {
+            font-size: 32px;
         }
+        
+        .control-btn .command {
+            font-family: monospace;
+            font-size: 18px;
+            font-weight: bold;
+            color: #ff6b35;
+        }
+        
+        .control-btn .label {
+            font-size: 12px;
+            color: #bbb;
+        }
+        
+        .control-btn:active {
+            transform: scale(0.96);
+            background: linear-gradient(135deg, #3a3a52 0%, #2a2a3e 100%);
+        }
+        
+        /* Special colors for each action */
+        .btn-start:active { border-color: #4CAF50; }
+        .btn-start .command { color: #4CAF50; }
+        
+        .btn-stop:active { border-color: #f44336; }
+        .btn-stop .command { color: #f44336; }
+        
+        .btn-lock:active { border-color: #2196F3; }
+        .btn-lock .command { color: #2196F3; }
+        
+        .btn-unlock:active { border-color: #FF9800; }
+        .btn-unlock .command { color: #FF9800; }
         
         .custom-section {
-            border-top: 2px solid #eee;
+            border-top: 1px solid rgba(255,255,255,0.1);
             padding-top: 20px;
+            margin-top: 5px;
         }
         
         .custom-input {
             width: 100%;
-            padding: 12px;
-            border: 2px solid #ddd;
-            border-radius: 8px;
+            padding: 14px;
+            background: rgba(0,0,0,0.3);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 15px;
             font-size: 16px;
-            margin-bottom: 10px;
+            color: white;
             resize: vertical;
-            min-height: 80px;
+            min-height: 100px;
+            font-family: inherit;
+        }
+        
+        .custom-input::placeholder {
+            color: #666;
+        }
+        
+        .custom-input:focus {
+            outline: none;
+            border-color: #ff6b35;
         }
         
         .send-custom-btn {
             width: 100%;
-            background: #4CAF50;
+            background: linear-gradient(135deg, #ff6b35 0%, #ff4500 100%);
             color: white;
             border: none;
-            padding: 15px;
-            border-radius: 8px;
-            font-size: 18px;
+            padding: 14px;
+            border-radius: 15px;
+            font-size: 16px;
             font-weight: 600;
             cursor: pointer;
+            margin-top: 12px;
+            transition: transform 0.1s;
         }
         
-        .phone-display {
+        .send-custom-btn:active {
+            transform: scale(0.98);
+        }
+        
+        .status-badge {
             text-align: center;
-            color: #666;
-            margin-bottom: 20px;
-            font-size: 14px;
+            margin-top: 20px;
+            padding: 10px;
+            background: rgba(0,0,0,0.3);
+            border-radius: 15px;
+            font-size: 11px;
+            color: #888;
+        }
+        
+        .command-hint {
+            font-family: monospace;
+            color: #555;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>📱 Quick SMS</h1>
+        <div class="car-header">
+            <div class="car-icon">🚗💨</div>
+            <h1>Kia Rio</h1>
+            <div class="car-model">Remote Control System</div>
+        </div>
         
         <div class="phone-display">
-            Sending to: <strong>+1234567890</strong>
+            📱 Sending commands to: <strong>0991906355</strong>
         </div>
         
         <div class="button-grid">
-            <button class="sms-btn" onclick="sendSMS('On my way!')">
-                🚗<br>On my way!
+            <button class="control-btn btn-start" onclick="sendSMS('S')">
+                <span class="emoji">🔑▶️</span>
+                <span class="command">'S'</span>
+                <span class="label">START ENGINE</span>
             </button>
-            <button class="sms-btn" onclick="sendSMS('Running late')">
-                ⏰<br>Running late
+            
+            <button class="control-btn btn-stop" onclick="sendSMS('Q')">
+                <span class="emoji">🔑⏹️</span>
+                <span class="command">'Q'</span>
+                <span class="label">STOP ENGINE</span>
             </button>
-            <button class="sms-btn" onclick="sendSMS('Call me')">
-                📞<br>Call me
+            
+            <button class="control-btn btn-lock" onclick="sendSMS('L')">
+                <span class="emoji">🔒🚪</span>
+                <span class="command">'L'</span>
+                <span class="label">LOCK DOORS</span>
             </button>
-            <button class="sms-btn" onclick="sendSMS('OK')">
-                👍<br>OK
-            </button>
-            <button class="sms-btn" onclick="sendSMS('Yes')">
-                ✅<br>Yes
-            </button>
-            <button class="sms-btn" onclick="sendSMS('No')">
-                ❌<br>No
+            
+            <button class="control-btn btn-unlock" onclick="sendSMS('U')">
+                <span class="emoji">🔓🚪</span>
+                <span class="command">'U'</span>
+                <span class="label">UNLOCK DOORS</span>
             </button>
         </div>
         
@@ -140,19 +242,25 @@
             <textarea 
                 class="custom-input" 
                 id="customMessage" 
-                placeholder="Type your custom message..."></textarea>
+                placeholder="Type any custom command here...&#10;Example: STATUS, HORN, LIGHTS"></textarea>
             <button class="send-custom-btn" onclick="sendCustomSMS()">
-                Send Custom Message
+                ✨ Send Custom Command ✨
             </button>
+        </div>
+        
+        <div class="status-badge">
+            ⚡ Commands are sent via SMS<br>
+            <span class="command-hint">S=Start | Q=Stop | L=Lock | U=Unlock</span>
         </div>
     </div>
 
     <script>
-        // CHANGE THIS TO YOUR PHONE NUMBER
-        const PHONE_NUMBER = "+1234567890"; // Replace with your number
+        // Your car control phone number
+        const PHONE_NUMBER = "0991906355";
         
-        function sendSMS(message) {
-            const smsLink = `sms:${PHONE_NUMBER}&body=${encodeURIComponent(message)}`;
+        function sendSMS(command) {
+            // Create SMS link with the single character command
+            const smsLink = `sms:${PHONE_NUMBER}?body=${encodeURIComponent(command)}`;
             window.location.href = smsLink;
         }
         
@@ -161,8 +269,26 @@
             if (customMessage) {
                 sendSMS(customMessage);
             } else {
-                alert('Please enter a message');
+                // Visual feedback instead of alert (better on mobile)
+                const btn = document.querySelector('.send-custom-btn');
+                const originalText = btn.textContent;
+                btn.textContent = '⚠️ Please enter a message ⚠️';
+                btn.style.background = '#f44336';
+                setTimeout(() => {
+                    btn.textContent = originalText;
+                    btn.style.background = 'linear-gradient(135deg, #ff6b35 0%, #ff4500 100%)';
+                }, 1500);
             }
+        }
+        
+        // Optional: Add haptic feedback on button press (iOS)
+        if (window.navigator && window.navigator.vibrate) {
+            const buttons = document.querySelectorAll('button');
+            buttons.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    window.navigator.vibrate(50);
+                });
+            });
         }
     </script>
 </body>
