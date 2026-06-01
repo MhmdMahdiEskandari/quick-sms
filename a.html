@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="apple-mobile-web-app-title" content="Quick SMS">
+    <link rel="apple-touch-icon" href="icon.png">
+    <title>Quick SMS</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .container {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            max-width: 400px;
+            width: 100%;
+        }
+        
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 30px;
+            font-size: 24px;
+        }
+        
+        .button-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+        
+        .sms-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 20px;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            text-align: center;
+            word-wrap: break-word;
+            min-height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .sms-btn:active {
+            transform: scale(0.95);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        
+        .custom-section {
+            border-top: 2px solid #eee;
+            padding-top: 20px;
+        }
+        
+        .custom-input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            margin-bottom: 10px;
+            resize: vertical;
+            min-height: 80px;
+        }
+        
+        .send-custom-btn {
+            width: 100%;
+            background: #4CAF50;
+            color: white;
+            border: none;
+            padding: 15px;
+            border-radius: 8px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        
+        .phone-display {
+            text-align: center;
+            color: #666;
+            margin-bottom: 20px;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📱 Quick SMS</h1>
+        
+        <div class="phone-display">
+            Sending to: <strong>+1234567890</strong>
+        </div>
+        
+        <div class="button-grid">
+            <button class="sms-btn" onclick="sendSMS('On my way!')">
+                🚗<br>On my way!
+            </button>
+            <button class="sms-btn" onclick="sendSMS('Running late')">
+                ⏰<br>Running late
+            </button>
+            <button class="sms-btn" onclick="sendSMS('Call me')">
+                📞<br>Call me
+            </button>
+            <button class="sms-btn" onclick="sendSMS('OK')">
+                👍<br>OK
+            </button>
+            <button class="sms-btn" onclick="sendSMS('Yes')">
+                ✅<br>Yes
+            </button>
+            <button class="sms-btn" onclick="sendSMS('No')">
+                ❌<br>No
+            </button>
+        </div>
+        
+        <div class="custom-section">
+            <textarea 
+                class="custom-input" 
+                id="customMessage" 
+                placeholder="Type your custom message..."></textarea>
+            <button class="send-custom-btn" onclick="sendCustomSMS()">
+                Send Custom Message
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // CHANGE THIS TO YOUR PHONE NUMBER
+        const PHONE_NUMBER = "+1234567890"; // Replace with your number
+        
+        function sendSMS(message) {
+            const smsLink = `sms:${PHONE_NUMBER}&body=${encodeURIComponent(message)}`;
+            window.location.href = smsLink;
+        }
+        
+        function sendCustomSMS() {
+            const customMessage = document.getElementById('customMessage').value.trim();
+            if (customMessage) {
+                sendSMS(customMessage);
+            } else {
+                alert('Please enter a message');
+            }
+        }
+    </script>
+</body>
+</html>
