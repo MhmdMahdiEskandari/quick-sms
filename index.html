@@ -1,436 +1,361 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="Kia Rio Remote">
-    <link rel="apple-touch-icon" href="icon.png">
-    <title>Kia Rio Remote Control</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: #000000;
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
-            position: relative;
-            overflow-x: hidden;
-        }
-        
-        /* Kia Brand Background Pattern */
-        body::before {
-            content: "";
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background-image: 
-                repeating-linear-gradient(45deg, 
-                    rgba(255, 255, 255, 0.03) 0px, 
-                    rgba(255, 255, 255, 0.03) 2px,
-                    transparent 2px,
-                    transparent 8px),
-                url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><text x="50" y="50" font-size="40" fill="rgba(255,255,255,0.03)" text-anchor="middle" dominant-baseline="middle">KIA</text></svg>');
-            background-repeat: repeat, repeat;
-            background-size: auto, 80px 80px;
-            pointer-events: none;
-            z-index: 0;
-        }
-        
-        /* Animated gradient overlay */
-        body::after {
-            content: "";
-            position: fixed;
-            top: -50%;
-            left: -50%;
-            right: -50%;
-            bottom: -50%;
-            background: radial-gradient(circle, rgba(255,255,255,0.05) 0%, rgba(0,0,0,0.95) 100%);
-            animation: slowMove 20s ease infinite;
-            pointer-events: none;
-            z-index: 0;
-        }
-        
-        @keyframes slowMove {
-            0%, 100% { transform: translate(0%, 0%) rotate(0deg); }
-            33% { transform: translate(5%, 5%) rotate(2deg); }
-            66% { transform: translate(-5%, -5%) rotate(-2deg); }
-        }
-        
-        .container {
-            background: rgba(20, 20, 25, 0.92);
-            backdrop-filter: blur(20px);
-            border-radius: 40px;
-            padding: 30px 25px;
-            box-shadow: 0 25px 50px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.1);
-            max-width: 420px;
-            width: 100%;
-            position: relative;
-            z-index: 1;
-            animation: slideUp 0.6s cubic-bezier(0.2, 0.9, 0.4, 1.1);
-        }
-        
-        @keyframes slideUp {
-            from {
-                opacity: 0;
-                transform: translateY(50px) scale(0.95);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0) scale(1);
-            }
-        }
-        
-        .car-header {
-            text-align: center;
-            margin-bottom: 20px;
-            animation: fadeIn 0.8s ease-out 0.2s both;
-        }
-        
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(-20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-        
-        .kia-logo {
-            font-size: 48px;
-            font-weight: 800;
-            letter-spacing: 8px;
-            background: linear-gradient(135deg, #ffffff 0%, #cccccc 100%);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-            text-shadow: 0 2px 10px rgba(255,255,255,0.2);
-            margin-bottom: 10px;
-        }
-        
-        .car-icon {
-            font-size: 80px;
-            filter: drop-shadow(0 5px 15px rgba(0,0,0,0.5));
-            animation: bounce 2s ease infinite;
-        }
-        
-        @keyframes bounce {
-            0%, 100% { transform: translateY(0px); }
-            50% { transform: translateY(-5px); }
-        }
-        
-        h1 {
-            text-align: center;
-            color: #ffffff;
-            margin-bottom: 8px;
-            font-size: 28px;
-            letter-spacing: 2px;
-            font-weight: 600;
-        }
-        
-        .car-model {
-            text-align: center;
-            color: #ff6600;
-            font-size: 14px;
-            font-weight: 600;
-            letter-spacing: 4px;
-            margin-bottom: 25px;
-            text-transform: uppercase;
-        }
-        
-        .button-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 15px;
-            margin-bottom: 0;
-        }
-        
-        .control-btn {
-            background: linear-gradient(135deg, #2a2a30 0%, #1a1a1f 100%);
-            color: white;
-            border: 1px solid rgba(255,255,255,0.15);
-            padding: 22px 12px;
-            border-radius: 25px;
-            font-size: 14px;
-            font-weight: 600;
-            cursor: pointer;
-            text-align: center;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 10px;
-            transition: all 0.3s cubic-bezier(0.2, 0.9, 0.4, 1.1);
-            opacity: 0;
-            transform: translateX(-30px);
-            animation: slideInButton 0.5s cubic-bezier(0.2, 0.9, 0.4, 1.1) forwards;
-        }
-        
-        @keyframes slideInButton {
-            to {
-                opacity: 1;
-                transform: translateX(0);
-            }
-        }
-        
-        /* Staggered animations for each button */
-        .control-btn:nth-child(1) { animation-delay: 0.1s; }
-        .control-btn:nth-child(2) { animation-delay: 0.2s; }
-        .control-btn:nth-child(3) { animation-delay: 0.3s; }
-        .control-btn:nth-child(4) { animation-delay: 0.4s; }
-        
-        .control-btn .emoji {
-            font-size: 42px;
-            transition: transform 0.2s ease;
-        }
-        
-        .control-btn .command {
-            font-family: monospace;
-            font-size: 20px;
-            font-weight: bold;
-            color: #ff6600;
-            background: rgba(0,0,0,0.3);
-            padding: 4px 12px;
-            border-radius: 20px;
-            display: inline-block;
-        }
-        
-        .control-btn .label {
-            font-size: 12px;
-            color: #bbb;
-            letter-spacing: 1px;
-        }
-        
-        .control-btn:hover {
-            transform: translateY(-5px) scale(1.02);
-            background: linear-gradient(135deg, #3a3a42 0%, #2a2a30 100%);
-            border-color: rgba(255,102,0,0.5);
-        }
-        
-        .control-btn:active {
-            transform: translateY(2px) scale(0.98);
-        }
-        
-        .control-btn:hover .emoji {
-            transform: scale(1.1);
-        }
-        
-        /* Button specific glow effects */
-        .btn-start:hover { box-shadow: 0 0 20px rgba(76, 175, 80, 0.3); }
-        .btn-stop:hover { box-shadow: 0 0 20px rgba(244, 67, 54, 0.3); }
-        .btn-lock:hover { box-shadow: 0 0 20px rgba(33, 150, 243, 0.3); }
-        .btn-unlock:hover { box-shadow: 0 0 20px rgba(255, 152, 0, 0.3); }
-        
-        .btn-start .command { color: #4CAF50; }
-        .btn-stop .command { color: #f44336; }
-        .btn-lock .command { color: #2196F3; }
-        .btn-unlock .command { color: #FF9800; }
-        
-        .status-badge {
-            text-align: center;
-            margin-top: 25px;
-            padding: 12px;
-            background: rgba(0,0,0,0.4);
-            border-radius: 20px;
-            font-size: 11px;
-            color: #888;
-            animation: fadeIn 0.8s ease-out 0.6s both;
-            backdrop-filter: blur(5px);
-        }
-        
-        .command-hint {
-            font-family: monospace;
-            color: #ff6600;
-            letter-spacing: 1px;
-        }
-        
-        /* Pulse animation for active state feedback */
-        @keyframes pulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(0.98); }
-        }
-        
-        .control-btn:active {
-            animation: pulse 0.2s ease;
-        }
-        
-        /* Kia brand watermark */
-        .brand-watermark {
-            position: fixed;
-            bottom: 15px;
-            right: 15px;
-            font-size: 10px;
-            color: rgba(255,255,255,0.1);
-            z-index: 1;
-            font-weight: 600;
-            letter-spacing: 2px;
-            animation: fadeIn 1s ease-out 0.8s both;
-        }
-        
-        /* Car silhouette in background */
-        .car-silhouette {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            height: 100px;
-            background: linear-gradient(transparent, rgba(255,255,255,0.02));
-            pointer-events: none;
-            z-index: 0;
-        }
-        
-        @media (max-width: 480px) {
-            .container {
-                padding: 25px 20px;
-            }
-            
-            .control-btn .emoji {
-                font-size: 36px;
-            }
-            
-            .control-btn .command {
-                font-size: 18px;
-            }
-            
-            .car-icon {
-                font-size: 65px;
-            }
-            
-            .kia-logo {
-                font-size: 36px;
-                letter-spacing: 6px;
-            }
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="KIA RIO">
+
+<title>KIA RIO Remote</title>
+
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+body{
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+    background:#000;
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    padding:20px;
+    color:white;
+}
+
+.container{
+    width:100%;
+    max-width:430px;
+
+    background:#111;
+
+    border:1px solid #222;
+
+    border-radius:35px;
+
+    overflow:hidden;
+
+    box-shadow:
+        0 25px 60px rgba(0,0,0,.8),
+        inset 0 1px 0 rgba(255,255,255,.05);
+}
+
+/* ==========================
+   HERO IMAGE
+========================== */
+
+.hero{
+    padding:20px 20px 10px;
+    text-align:center;
+    background:linear-gradient(
+        to bottom,
+        #161616,
+        #0d0d0d
+    );
+}
+
+.hero img{
+    width:100%;
+    max-width:380px;
+    object-fit:contain;
+
+    filter:
+        drop-shadow(0 10px 30px rgba(255,255,255,.08));
+}
+
+/* ==========================
+   TITLE
+========================== */
+
+.header{
+    text-align:center;
+    padding:10px 25px 25px;
+}
+
+.kia{
+    font-size:42px;
+    font-weight:900;
+    letter-spacing:8px;
+    color:white;
+}
+
+.model{
+    margin-top:8px;
+    color:#999;
+    letter-spacing:5px;
+    font-size:13px;
+}
+
+.status{
+    margin:20px auto 0;
+
+    width:fit-content;
+
+    padding:10px 16px;
+
+    border-radius:20px;
+
+    background:#090909;
+
+    border:1px solid #222;
+
+    color:#ccc;
+
+    font-size:13px;
+}
+
+/* ==========================
+   BUTTONS
+========================== */
+
+.controls{
+    padding:25px;
+}
+
+.grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:15px;
+}
+
+.btn{
+    background:#181818;
+
+    border:1px solid #2c2c2c;
+
+    border-radius:25px;
+
+    padding:24px 10px;
+
+    color:white;
+
+    cursor:pointer;
+
+    transition:.25s;
+
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+}
+
+.btn:hover{
+    transform:translateY(-3px);
+    background:#202020;
+}
+
+.btn:active{
+    transform:scale(.97);
+}
+
+.icon{
+    width:42px;
+    height:42px;
+    margin-bottom:12px;
+}
+
+.command{
+    font-size:20px;
+    font-weight:bold;
+
+    padding:5px 14px;
+
+    border-radius:20px;
+
+    background:#000;
+
+    border:1px solid #333;
+
+    margin-bottom:8px;
+}
+
+.label{
+    font-size:12px;
+    color:#aaa;
+    letter-spacing:1px;
+}
+
+.start .command{
+    color:#4CAF50;
+}
+
+.stop .command{
+    color:#f44336;
+}
+
+.lock .command{
+    color:#2196F3;
+}
+
+.unlock .command{
+    color:#FF9800;
+}
+
+.start:hover{
+    box-shadow:0 0 20px rgba(76,175,80,.25);
+}
+
+.stop:hover{
+    box-shadow:0 0 20px rgba(244,67,54,.25);
+}
+
+.lock:hover{
+    box-shadow:0 0 20px rgba(33,150,243,.25);
+}
+
+.unlock:hover{
+    box-shadow:0 0 20px rgba(255,152,0,.25);
+}
+
+.footer{
+    text-align:center;
+    padding:0 25px 25px;
+    color:#555;
+    font-size:11px;
+    letter-spacing:2px;
+}
+
+@media(max-width:480px){
+
+    .kia{
+        font-size:34px;
+    }
+
+    .icon{
+        width:36px;
+        height:36px;
+    }
+
+    .command{
+        font-size:18px;
+    }
+}
+
+</style>
 </head>
+
 <body>
-    <div class="car-silhouette"></div>
-    
-    <div class="container">
-        <div class="car-header">
-            <div class="kia-logo">KIA</div>
-            <div class="car-icon">🚗💨</div>
-            <h1>Rio</h1>
-            <div class="car-model">Remote Control System</div>
-        </div>
-        
-        <div class="button-grid">
-            <button class="control-btn btn-start" onclick="sendSMS('S')">
-                <span class="emoji">🔑▶️</span>
-                <span class="command">'S'</span>
-                <span class="label">START ENGINE</span>
-            </button>
-            
-            <button class="control-btn btn-stop" onclick="sendSMS('Q')">
-                <span class="emoji">🔑⏹️</span>
-                <span class="command">'Q'</span>
-                <span class="label">STOP ENGINE</span>
-            </button>
-            
-            <button class="control-btn btn-lock" onclick="sendSMS('L')">
-                <span class="emoji">🔒🚪</span>
-                <span class="command">'L'</span>
-                <span class="label">LOCK DOORS</span>
-            </button>
-            
-            <button class="control-btn btn-unlock" onclick="sendSMS('U')">
-                <span class="emoji">🔓🚪</span>
-                <span class="command">'U'</span>
-                <span class="label">UNLOCK DOORS</span>
-            </button>
-        </div>
-        
-        <div class="status-badge">
-            ⚡ SMS Remote Control System<br>
-            <span class="command-hint">S=Start | Q=Stop | L=Lock | U=Unlock</span>
-        </div>
-    </div>
-    
-    <div class="brand-watermark">
-        KIA | Drive the Change
+
+<div class="container">
+
+    <div class="hero">
+        <img src="rio.jpg" alt="Kia Rio">
     </div>
 
-    <script>
-        // Your car control phone number
-        const PHONE_NUMBER = "09919063955";
-        
-        function sendSMS(command) {
-            // Create SMS link with the single character command
-            const smsLink = `sms:${PHONE_NUMBER}?body=${encodeURIComponent("'" + command)}`;
-            window.location.href = smsLink;
-            
-            // Add haptic feedback for supported devices
-            if (window.navigator && window.navigator.vibrate) {
-                window.navigator.vibrate(50);
-            }
-        }
-        
-        // Add ripple effect on button clicks
-        const buttons = document.querySelectorAll('.control-btn');
-        buttons.forEach(button => {
-            button.addEventListener('click', function(e) {
-                // Create ripple effect
-                const ripple = document.createElement('span');
-                ripple.style.position = 'absolute';
-                ripple.style.borderRadius = '50%';
-                ripple.style.backgroundColor = 'rgba(255,255,255,0.3)';
-                ripple.style.width = '20px';
-                ripple.style.height = '20px';
-                ripple.style.transform = 'scale(0)';
-                ripple.style.animation = 'ripple 0.6s ease-out';
-                ripple.style.pointerEvents = 'none';
-                
-                const rect = this.getBoundingClientRect();
-                const x = e.clientX - rect.left;
-                const y = e.clientY - rect.top;
-                
-                ripple.style.left = x + 'px';
-                ripple.style.top = y + 'px';
-                ripple.style.position = 'absolute';
-                
-                this.style.position = 'relative';
-                this.style.overflow = 'hidden';
-                this.appendChild(ripple);
-                
-                setTimeout(() => {
-                    ripple.remove();
-                }, 600);
-            });
-        });
-        
-        // Add ripple animation keyframes
-        const style = document.createElement('style');
-        style.textContent = `
-            @keyframes ripple {
-                to {
-                    transform: scale(20);
-                    opacity: 0;
-                }
-            }
-        `;
-        document.head.appendChild(style);
-        
-        // Optional: Add haptic feedback on button press (iOS)
-        if (window.navigator && window.navigator.vibrate) {
-            const allButtons = document.querySelectorAll('button');
-            allButtons.forEach(btn => {
-                btn.addEventListener('click', () => {
-                    window.navigator.vibrate(30);
-                });
-            });
-        }
-    </script>
+    <div class="header">
+        <div class="kia">KIA</div>
+
+        <div class="model">
+            RIO REMOTE CONTROL
+        </div>
+
+        <div class="status">
+            ● Vehicle Online
+        </div>
+    </div>
+
+    <div class="controls">
+
+        <div class="grid">
+
+            <!-- START -->
+            <button class="btn start"
+                    onclick="sendSMS('S')">
+
+                <svg class="icon"
+                     viewBox="0 0 24 24"
+                     fill="#4CAF50">
+                    <path d="M8 5v14l11-7z"/>
+                </svg>
+
+                <div class="command">'S'</div>
+                <div class="label">START ENGINE</div>
+
+            </button>
+
+            <!-- STOP -->
+            <button class="btn stop"
+                    onclick="sendSMS('R')">
+
+                <svg class="icon"
+                     viewBox="0 0 24 24"
+                     fill="#f44336">
+                    <rect x="5"
+                          y="5"
+                          width="14"
+                          height="14"
+                          rx="2"/>
+                </svg>
+
+                <div class="command">'R'</div>
+                <div class="label">STOP ENGINE</div>
+
+            </button>
+
+            <!-- LOCK -->
+            <button class="btn lock"
+                    onclick="sendSMS('L')">
+
+                <svg class="icon"
+                     viewBox="0 0 24 24"
+                     fill="#2196F3">
+                    <path d="M17 8h-1V6a4 4 0 0 0-8 0v2H7a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-9a2 2 0 0 0-2-2zm-7-2a2 2 0 0 1 4 0v2h-4z"/>
+                </svg>
+
+                <div class="command">'L'</div>
+                <div class="label">LOCK DOORS</div>
+
+            </button>
+
+            <!-- UNLOCK -->
+            <button class="btn unlock"
+                    onclick="sendSMS('U')">
+
+                <svg class="icon"
+                     viewBox="0 0 24 24"
+                     fill="#FF9800">
+                    <path d="M17 8h-6V6a2 2 0 1 1 4 0h2a4 4 0 1 0-8 0v2H7a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-9a2 2 0 0 0-2-2z"/>
+                </svg>
+
+                <div class="command">'U'</div>
+                <div class="label">UNLOCK DOORS</div>
+
+            </button>
+
+        </div>
+
+    </div>
+
+    <div class="footer">
+        KIA RIO • SMART CONTROL
+    </div>
+
+</div>
+
+<script>
+
+const PHONE_NUMBER = "09919063955";
+
+function sendSMS(command){
+
+    const smsLink =
+        `sms:${PHONE_NUMBER}?body=${encodeURIComponent("'" + command)}`;
+
+    window.location.href = smsLink;
+
+    if(navigator.vibrate){
+        navigator.vibrate(50);
+    }
+}
+
+</script>
+
 </body>
 </html>
